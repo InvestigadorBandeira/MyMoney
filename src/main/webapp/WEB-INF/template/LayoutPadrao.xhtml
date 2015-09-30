@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+
+	<h:head>
+		<meta http-equiv="Context-Type" content="text/html; charset=UTF-8" />
+		<title><ui:insert name="titulo">MyMoney - Sistema de Controle Financeiro Pessoal</ui:insert></title>
+		<h:outputStylesheet library="css" name="sistema.css" />
+		<h:outputScript library="js" name="jquery.maskMoney.js" />
+	</h:head>
+	
+	<h:body>
+		<p:ajaxStatus styleClass="ajax-status" onsuccess="configurarMoeda()">
+			<f:facet name="start">
+				<h:graphicImage width="35" height="35" library="images" name="loading.gif" />
+			</f:facet>
+			<f:facet name="complete">
+				<h:outputText value="" />
+			</f:facet>
+		</p:ajaxStatus>
+		
+		<header>
+			<div style="float: left">
+				<h:link outcome="/Home">
+					<h:graphicImage width="16%" height="16%" library="images" name="logo.gif" />
+				</h:link>
+			</div>
+			
+			<div style="float: right; margin-right: 110px">
+				<span style="float: left; height: 30px; line-height: 34px; margin-right: 70px">
+					Olá usuário!
+				</span>
+				
+				<h:form style="display: inline-block">
+					<p:menubar styleClass="menu-sistema">
+						<p:submenu label="Cadastros">
+							<p:menuitem value="CONTAS" outcome="/contas/PesquisaConta" />
+							<p:separator/>
+							<p:menuitem value="CATEGORIAS" outcome="/categorias/PesquisaCategoria" />
+						</p:submenu>
+						<p:submenu label="Lançamentos">
+							<p:menuitem value="TRANSFERÊNCIAS" outcome="/transferencias/Pesquisar" />
+							<p:menuitem value="RECEITAS" outcome="/receitas/PesquisaReceita" />
+						</p:submenu>
+						<p:submenu label="Relatórios">
+							<p:menuitem value="Saldo Contas" />
+							<p:menuitem value="Transferências" />
+						</p:submenu>
+						
+						<p:menuitem value="Sair"/>
+					</p:menubar>
+				</h:form>
+			</div>
+			<div style="clear: both"></div>
+		</header>
+		
+		<div id="conteudo">
+			<ui:insert name="corpo"/>
+		</div>
+	
+		<p:separator style="margin-top: 20px"/>
+	
+		<footer>
+			<br/>
+			<b>MyMoney</b>  - Sistema de Controle Financeiro Pessoal<br/>
+			versão 0.0.1, Copyright (C) 2015 vFX - (IB)
+			<br/> <br/>
+		</footer>
+		
+		<script>
+			function configurarMoeda() {
+				$(".moeda").maskMoney({ decimal: ",", thousands: ".", allowZero: true });
+			}
+			
+			$(document).ready(function() {
+				configurarMoeda();
+			});
+		</script>
+	</h:body>
+	
+</html>

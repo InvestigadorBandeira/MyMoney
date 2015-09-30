@@ -1,0 +1,75 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+    
+    <ui:define name="titulo">Pesquisa de CONTAS</ui:define>
+    
+    <ui:define name="corpo">
+    	<h:form id="frmPesquisa">
+    		<h1>Pesquisa de CONTAS</h1>
+    		
+    		<p:toolbar style="margin-top: 20px">
+    			<p:toolbarGroup>
+    				<p:commandButton value="Pesquisar" action="#{pesquisaContaBean.pesquisar}"
+    					update="@form" />
+    			</p:toolbarGroup>
+    			<p:toolbarGroup align="right">
+    				<p:button value="Nova" outcome="/contas/CadastroConta" />
+    			</p:toolbarGroup>
+    		</p:toolbar>
+    		
+    		<p:messages autoUpdate="true" closable="true" />
+    		
+    		<p:focus context="panel"/>
+    		<p:panelGrid columns="2" id="panel" style="widht: 100%; margin-top: 20px"
+    				columnClasses="rotulo, campo">
+    			<p:outputLabel value="NOME" for="nome" />
+    			<p:inputText id="nome" size="10" value="#{pesquisaContaBean.nome}" />
+    		</p:panelGrid>
+    		
+    		<p:dataTable id="contasTable" value="#{pesquisaContaBean.filtrados}" var="conta"
+    			style="margin-top: 20px" emptyMessage="Nenhuma CONTA encontrada." rows="10"
+    			paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom">
+    			<p:column headerText="NOME" width="450px">
+    				<h:outputText value="#{conta.nome}" />
+    			</p:column>
+    			<p:column headerText="TIPO DE CONTA">
+    				<h:outputText value="#{conta.tipoConta}" />
+    			</p:column>
+    			<p:column headerText="SALDO INICIAL" style="text-align: right; width: 200px">
+    				<h:outputText value="#{conta.saldoInicial}">
+    					<f:convertNumber type="currency" />
+    				</h:outputText>
+    			</p:column>
+    			<p:column style="text-align: center; width: 100px">
+    				<p:button icon="ui-icon-pencil" title="Editar" outcome="/contas/CadastroConta">
+    					<f:param name="conta" value="#{conta.id}" />
+    				</p:button>
+    				
+	    			<p:commandButton icon="ui-icon-trash" title="Excluir" oncomplete="PF('confirmacaoExclusao').show()"
+	    				update=":frmPesquisa:confirmacaoExclusaoDialog">
+	    				<f:setPropertyActionListener value="#{conta}" target="#{pesquisaContaBean.selecionada}" />
+	    			</p:commandButton>
+    			</p:column>
+    		</p:dataTable>
+    		
+    		<p:confirmDialog header="Exclusão de CONTA" closable="false" closeOnEscape="true"
+    			widgetVar="confirmacaoExclusao" id="confirmacaoExclusaoDialog">
+    			
+    			<f:facet name="message">
+    				<h:outputLabel value="Tem certeza que deseja excluir a Conta " />
+    				<h:outputFormat value="'#{pesquisaContaBean.selecionada.nome}'?" />
+    			</f:facet>
+    			
+    			<p:commandButton value="Não" onclick="PF('confirmacaoExclusao').hide(); return false;" />
+    			
+    			<p:commandButton value="Sim" oncomplete="PF('confirmacaoExclusao').hide()"
+    				action="#{pesquisaContaBean.excluir}" process="@this"
+    				update=":frmPesquisa:contasTable" />
+	    	</p:confirmDialog>
+    	</h:form>
+    </ui:define>
+</ui:composition>

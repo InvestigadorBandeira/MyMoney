@@ -1,0 +1,100 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+    
+    <ui:define name="titulo">Pesquisa de RECEITAS</ui:define>
+    
+    <ui:define name="corpo">
+    	<h:form id="frmPesquisa">
+    		<h1>Pesquisa de RECEITAS</h1>
+    		
+    		<p:toolbar style="margin-top: 20px">
+    			<p:toolbarGroup>
+    				<p:commandButton value="Pesquisar" action="#{pesquisaReceitaBean.pesquisar}"
+    					update="@form" />
+    			</p:toolbarGroup>
+    			<p:toolbarGroup align="right">
+    				<p:button value="Nova" outcome="/receitas/CadastroReceita" />
+    			</p:toolbarGroup>
+    		</p:toolbar>
+
+    		<p:messages autoUpdate="true" closable="true" />
+    		
+    		<p:focus context="panel"/>
+    		<p:panelGrid columns="2" id="panel" style="widht: 100%; margin-top: 20px"
+    				columnClasses="rotulo, campo">
+    			<p:outputLabel value="NOME" for="nome" />
+    			<p:inputText id="nome" size="10" value="#{pesquisaReceitaBean.nome}" />
+    		</p:panelGrid>
+    		
+    		<p:dataTable id="receitasTable" value="#{pesquisaReceitaBean.filtrados}" var="receita"
+    			style="margin-top: 20px" emptyMessage="Nenhuma RECEITA encontrada." rows="10"
+    			paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom">
+    			<p:column headerText="CONTA" width="450px">
+    				<h:outputText value="#{receita.conta.nome}" />
+    			</p:column>
+    			<p:column headerText="DATA">
+    				<h:outputText value="#{receita.data}">
+    					<f:convertDateTime pattern="dd/MM/yyyy" />
+    				</h:outputText>
+    			</p:column>
+    			<p:column headerText="DESCRIÇÃO" width="250px">
+    				<h:outputText value="#{receita.descricao}" />
+    			</p:column>
+    			<p:column headerText="VALOR" style="text-align: right; width: 200px">
+    				<h:outputText value="#{receita.valor}">
+    					<f:convertNumber type="currency" />
+    				</h:outputText>
+    			</p:column>
+    			<p:column headerText="CATEGORIA" width="400px">
+    				<h:outputText value="#{receita.categoria.nome}" />
+    			</p:column>
+    			<p:column headerText="OBSERVAÇÃO" width="900px">
+    				<h:outputText value="#{transferencia.observacao}" />
+    			</p:column>
+    			<p:column style="text-align: center; width: 100px">
+    				<p:button icon="ui-icon-pencil" title="Editar" outcome="/receitas/CadastroReceita">
+    					<f:param name="receita" value="#{receita.id}" />
+    				</p:button>
+	    			
+	    			<p:commandButton icon="ui-icon-trash" title="Excluir" oncomplete="PF('confirmacaoExclusao').show()"
+	    				update=":frmPesquisa:confirmacaoExclusaoDialog">
+	    				<f:setPropertyActionListener value="#{receita}" target="#{pesquisaReceitaBean.selecionada}" />
+	    			</p:commandButton>
+    			</p:column>
+    		</p:dataTable>
+    		
+    		<p:confirmDialog header="Exclusão de RECEITA" closable="false" closeOnEscape="true"
+    			widgetVar="confirmacaoExclusao"	id="confirmacaoExclusaoDialog">
+    			
+    			<f:facet name="message">
+            		<h:outputFormat value="Tem certeza de que deseja excluir a Receita?" /> <br/> <br/>
+            		<h:outputFormat value="Conta: #{pesquisaReceitaBean.selecionada.conta.nome}" /> <br/>
+            		
+            		<h:outputLabel value="Data: " />
+            		<h:outputFormat value="#{pesquisaReceitaBean.selecionada.data}">
+            			<f:convertDateTime pattern="dd/MM/yyyy" />
+            		</h:outputFormat> <br/>
+            		
+            		<h:outputFormat value="Descrição: #{pesquisaReceitaBean.selecionada.descricao}" /> <br/>
+            		
+            		<h:outputLabel value="Valor: " />
+            		<h:outputFormat value="#{pesquisaReceitaBean.selecionada.valor}">
+            			<f:convertNumber type="currency" />
+            		</h:outputFormat> <br/>
+            		
+            		<h:outputFormat value="Categoria: #{pesquisaReceitaBean.selecionada.categoria.nome}" /> <br/>
+        		</f:facet>
+        		
+        		<p:commandButton value="Não" onclick="PF('confirmacaoExclusao').hide(); return false;" />
+    			
+    			<p:commandButton value="Sim" oncomplete="PF('confirmacaoExclusao').hide()"
+    				action="#{pesquisaReceitaBean.excluir}" process="@this"
+	    			update=":frmPesquisa:receitasTable" />
+	    	</p:confirmDialog>
+    	</h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,68 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:o="http://omnifaces.org/ui">
+    
+    <ui:define name="titulo">#{cadastroReceitaBean.isEditando() ? 'Editar' : 'Nova'} RECEITA</ui:define>
+    
+    <ui:define name="corpo">
+    	<f:metadata>
+    		<o:viewParam name="receita" value="#{cadastroReceitaBean.receita}" />
+    		<f:event listener="#{cadastroReceitaBean.inicializar}" type="preRenderView" />
+    	</f:metadata>
+    
+    	<h:form>
+    		<h1>#{cadastroReceitaBean.isEditando() ? 'Editar' : 'Nova'} RECEITA</h1>
+    		
+    		<p:toolbar style="margin-top: 20px">
+    			<p:toolbarGroup>
+    				<p:button value="Nova" outcome="/receitas/CadastroReceita" />
+    				<p:commandButton value="Salvar" id="botaoSalvar"
+    					action="#{cadastroReceitaBean.salvar}" update="@form" />
+    			</p:toolbarGroup>
+    			<p:toolbarGroup align="right">
+    				<p:button value="Pesquisar" outcome="/receitas/PesquisaReceita" />
+    			</p:toolbarGroup>
+    		</p:toolbar>
+
+    		<p:messages autoUpdate="true" closable="true" />
+    		
+    		<p:focus context="panel"/>
+    		<p:panelGrid columns="2" id="panel" style="widht: 100%; margin-top: 20px"
+    				columnClasses="rotulo, campo">
+    			
+    			<p:outputLabel value="Conta" for="conta" />
+    			<p:selectOneMenu id="conta" value="#{cadastroReceitaBean.receita.conta}" required="true">
+    				<f:selectItem itemLabel="Selecione a Conta"/>
+    				<f:selectItems value="#{cadastroReceitaBean.contas}" var="conta"
+    					itemValue="#{conta}" itemLabel="#{conta.nome}" />
+    			</p:selectOneMenu>
+    			
+    			<p:outputLabel value="Data" for="data" />
+    			<p:calendar id="data" size="10" pattern="dd/MM/yyyy" value="#{cadastroReceitaBean.receita.data}" required="true" />
+    			
+    			<p:outputLabel value="DESCRIÇÃO" for="descricao" />
+    			<p:inputText id="descricao" size="50" value="#{cadastroReceitaBean.receita.descricao}" required="true" />
+    			
+    			<p:outputLabel value="VALOR" for="valor" />
+    			<p:inputText id="valor" size="12" maxlength="12" styleClass="moeda" required="true"
+    				value="#{cadastroReceitaBean.receita.valor}">
+    				<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+    			</p:inputText>
+    			
+    			<p:outputLabel value="Categoria" for="categoria" />
+    			<p:selectOneMenu id="categoria" value="#{cadastroReceitaBean.receita.categoria}" required="true">
+    				<f:selectItem itemLabel="Selecione a Categoria"/>
+    				<f:selectItems value="#{cadastroReceitaBean.categorias}" var="categoria" itemLabel="#{categoria.nome}" />
+    			</p:selectOneMenu>
+    			
+    			<p:outputLabel value="OBSERVAÇÃO" for="observacao" />
+    			<p:inputTextarea id="observacao" rows="2" style="width: 100%"
+    				value="#{cadastroReceitaBean.receita.observacao}" />
+    		</p:panelGrid>
+    	</h:form>
+    </ui:define>
+</ui:composition>

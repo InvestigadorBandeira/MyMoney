@@ -1,0 +1,28 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+    
+    <ui:define name="titulo">MyMoney - Sistema de Controle Financeiro Pessoal</ui:define>
+    
+    <ui:define name="corpo">
+    	<h1>Saldo das Contas</h1>
+    	
+    	<h:form style="margin-top: 20px">
+    		<p:dataTable id="saldoTable" value="#{saldoBean.saldoContas}" var="saldo"
+    			emptyMessage="Não existem contas cadastradas.">
+    			<p:column headerText="CONTA">
+    				<h:outputText value="#{saldo.key.nome}" />
+    			</p:column>
+    			<p:column headerText="SALDO" style="text-align: right">
+    				<h:outputText value="#{saldo.value}">
+    					<f:convertNumber type="currency" />
+    				</h:outputText>
+    			</p:column>
+    		</p:dataTable>
+    	</h:form>
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,98 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+    
+    <ui:define name="titulo">Pesquisa de TRANSFERÊNCIAS</ui:define>
+    
+    <ui:define name="corpo">
+    	<h:form id="frmPesquisa">
+    		<h1>Pesquisa de TRANSFERÊNCIAS</h1>
+    		
+    		<p:toolbar style="margin-top: 20px">
+    			<p:toolbarGroup>
+    				<p:commandButton value="Pesquisar" action="#{pesquisaTransferenciaBean.pesquisar}"
+    					update="@form" />
+    			</p:toolbarGroup>
+    			<p:toolbarGroup align="right">
+    				<p:button value="Nova" outcome="/transferencias/Efetuar" />
+    			</p:toolbarGroup>
+    		</p:toolbar>
+
+    		<p:messages autoUpdate="true" closable="true" />
+    		
+    		<p:focus context="panel"/>
+    		<p:panelGrid columns="2" id="panel" style="widht: 100%; margin-top: 20px"
+    				columnClasses="rotulo, campo">
+    			<p:outputLabel value="NOME" for="nome" />
+    			<p:inputText id="nome" size="10" value="#{pesquisaTransferenciaBean.nome}" />
+    		</p:panelGrid>
+    		
+    		<p:dataTable id="transferenciasTable" value="#{pesquisaTransferenciaBean.filtrados}" var="transferencia"
+    			style="margin-top: 20px" emptyMessage="Nenhuma TRANSFERÊNCIA encontrada." rows="10"
+    			paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom">
+    			<p:column headerText="CONTA DE ORIGEM" width="450px">
+    				<h:outputText value="#{transferencia.origem.nome}" />
+    			</p:column>
+    			<p:column headerText="CONTA DE DESTINO" width="450px">
+    				<h:outputText value="#{transferencia.destino.nome}" />
+    			</p:column>
+    			<p:column headerText="DATA">
+    				<h:outputText value="#{transferencia.data}">
+    					<f:convertDateTime pattern="dd/MM/yyyy" />
+    				</h:outputText>
+    			</p:column>
+    			<p:column headerText="DESCRIÇÃO" width="250px">
+    				<h:outputText value="#{transferencia.descricao}" />
+    			</p:column>
+    			<p:column headerText="VALOR" style="text-align: right; width: 200px">
+    				<h:outputText value="#{transferencia.valor}">
+    					<f:convertNumber type="currency" />
+    				</h:outputText>
+    			</p:column>
+    			<p:column headerText="OBSERVAÇÃO" width="900px">
+    				<h:outputText value="#{transferencia.observacao}" />
+    			</p:column>
+    			<p:column style="text-align: center; width: 100px">
+    				<p:button icon="ui-icon-pencil" title="Editar" outcome="/transferencias/Efetuar">
+    					<f:param name="transferencia" value="#{transferencia.id}" />
+    				</p:button>
+	    			
+	    			<p:commandButton icon="ui-icon-trash" title="Excluir" oncomplete="PF('confirmacaoExclusao').show()"
+	    				update=":frmPesquisa:confirmacaoExclusaoDialog">
+	    				<f:setPropertyActionListener value="#{transferencia}" target="#{pesquisaTransferenciaBean.selecionada}" />
+	    			</p:commandButton>
+    			</p:column>
+    		</p:dataTable>
+    		
+    		<p:confirmDialog header="Exclusão de TRANSFERÊNCIA" closable="false" closeOnEscape="true"
+    			widgetVar="confirmacaoExclusao"	id="confirmacaoExclusaoDialog">
+    			
+    			<f:facet name="message">
+            		<h:outputFormat value="Tem certeza de que deseja excluir a Transferência?" /> <br/>
+            		<h:outputFormat value="Origem: #{pesquisaTransferenciaBean.selecionada.origem.nome}" /> <br/>
+            		<h:outputFormat value="Destino: #{pesquisaTransferenciaBean.selecionada.destino.nome}" /> <br/>
+            		
+            		<h:outputLabel value="Data: " />
+            		<h:outputFormat value="#{pesquisaTransferenciaBean.selecionada.data}">
+            			<f:convertDateTime pattern="dd/MM/yyyy" />
+            		</h:outputFormat> <br/>
+            		
+            		<h:outputLabel value="Valor: " />
+            		<h:outputFormat value="#{pesquisaTransferenciaBean.selecionada.valor}">
+            			<f:convertNumber type="currency" />
+            		</h:outputFormat>  <br/>
+            		<h:outputFormat value="Descrição: #{pesquisaTransferenciaBean.selecionada.descricao}" />
+        		</f:facet>
+        		
+        		<p:commandButton value="Não" onclick="PF('confirmacaoExclusao').hide(); return false;" />
+    			
+    			<p:commandButton value="Sim" oncomplete="PF('confirmacaoExclusao').hide()"
+    				action="#{pesquisaTransferenciaBean.excluir}" process="@this"
+	    			update=":frmPesquisa:transferenciasTable" />
+	    	</p:confirmDialog>
+    	</h:form>
+    </ui:define>
+</ui:composition>

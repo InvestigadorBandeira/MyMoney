@@ -1,0 +1,162 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:o="http://omnifaces.org/ui">
+    
+    <ui:define name="titulo">#{cadastroTituloBean.isEditando() ? 'Editar' : 'Novo'} TÍTULO</ui:define>
+    
+    <ui:define name="corpo">
+    	<f:metadata>
+    		<o:viewParam name="titulo" value="#{cadastroTituloBean.titulo}" />
+    		<o:viewParam name="item" value="#{cadastroTituloBean.item}" />
+    		<o:viewParam name="parcela" value="#{cadastroTituloBean.parcela}" />
+    		<f:event listener="#{cadastroTituloBean.inicializar}" type="preRenderView" />
+    	</f:metadata>
+    
+    	<h:form id="frmCadastro">
+    		<h1>#{cadastroTituloBean.isEditando() ? 'Editar' : 'Novo'} TÍTULO</h1>
+    		
+    		<p:toolbar style="margin-top: 20px">
+    			<p:toolbarGroup>
+    				<p:button value="Novo" outcome="/titulos/CadastroTitulo" />
+    				<p:commandButton value="Salvar" id="botaoSalvar"
+    					action="#{cadastroTituloBean.salvar}" update="@form" />
+    				<p:separator/>
+    				<p:commandButton value="Adicionar Item" oncomplete="PF('adicionaItem').show()" />
+    				<p:separator/>
+    				<p:commandButton value="Adicionar Parcela" oncomplete="PF('adicionaParcela').show()" />
+    				
+    			</p:toolbarGroup>
+    			<p:toolbarGroup align="right">
+    				<p:button value="Pesquisar" outcome="/titulos/PesquisaTitulo" />
+    			</p:toolbarGroup>
+    		</p:toolbar>
+
+    		<p:messages autoUpdate="false" closable="true" />
+    		
+    		<p:panelGrid columns="2" id="panel" style="widht: 100%; margin-top: 20px"
+    				columnClasses="rotulo, campo">
+    			
+    			<p:outputLabel value="DATA" for="data" />
+    			<p:calendar id="data" size="10" pattern="dd/MM/yyyy" value="#{cadastroTituloBean.titulo.data}" required="true" />
+    			
+    			<p:outputLabel value="DESCRIÇÃO" for="descricao" />
+    			<p:inputText id="descricao" size="50" value="#{cadastroTituloBean.titulo.descricao}" required="true" />
+    			
+    			<p:outputLabel value="VALOR TOTAL" for="valorTotal" />
+    			<h:outputText id="valorTotal" value="#{cadastroTituloBean.titulo.valorTotal}">
+    				<f:convertNumber type="currency" />
+    			</h:outputText>
+    		</p:panelGrid> <br/>
+    		
+    		<p:outputLabel value="ITENS ADICIONADOS" for="itensTable" style="font-weight: bold" />
+    		<p:dataTable id="itensTable" value="#{cadastroTituloBean.titulo.itens}" var="item" style="width: 800px"
+    			emptyMessage="Nenhum ITEM adicionado.">
+    			<p:column headerText="CATEGORIA">
+    				<h:outputText value="#{item.categoria.nome}" />
+    			</p:column>
+    			<p:column headerText="DESCRIÇÃO">
+    				<h:outputText value="#{item.descricao}" />
+    			</p:column>
+    			<p:column headerText="VALOR" style="text-align: right; width: 200px">
+    				<h:outputText value="#{item.valor}">
+    					<f:convertNumber type="currency" />
+    				</h:outputText>
+    			</p:column>
+    		</p:dataTable> <br/>
+    		
+    		<p:outputLabel value="PARCELAS ADICIONADAS" for="parcelasTable" style="font-weight: bold" />
+    		<p:dataTable id="parcelasTable" value="#{cadastroTituloBean.titulo.parcelas}" var="parcela" style="width: 800px"
+    			emptyMessage="Nenhuma PARCELA adicionada.">
+    			
+    			<p:column headerText="DATA DE VENCIMENTO" style="text-align: center">
+    				<h:outputText value="#{parcela.dataVencimento}">
+    					<f:convertDateTime pattern="dd/MM/yyyy" />
+    				</h:outputText>
+    			</p:column>
+    			<p:column headerText="VALOR" style="text-align: right">
+    				<h:outputText value="#{parcela.valor}">
+    					<f:convertNumber type="currency" />
+    				</h:outputText>
+    			</p:column>
+    			<p:column headerText="ACRÉSCIMO" style="text-align: right">
+    				<h:outputText value="#{parcela.acrescimo}">
+    					<f:convertNumber type="currency" />
+    				</h:outputText>
+    			</p:column>
+    			<p:column headerText="DESCONTO" style="text-align: right">
+    				<h:outputText value="#{parcela.desconto}">
+    					<f:convertNumber type="currency" />
+    				</h:outputText>
+    			</p:column>
+    			<p:column headerText="PAGA?" style="text-align: center; width: 100px">
+    				<h:outputText value="#{parcela.paga ? 'SIM' : 'NÃO'}" />
+    			</p:column>
+    		</p:dataTable>
+    	</h:form>
+    	
+    	<h:form id="frmItem">
+    	<p:dialog header="Adicionar ITEM"  modal="true" resizable="false" closeOnEscape="true" closable="false"
+    			widgetVar="adicionaItem" id="adicionaItemDialog">
+    			
+    			<p:messages closable="true" />
+    			
+    			<p:panelGrid columns="2" id="panelItem" columnClasses="rotulo, campo">
+    				<p:outputLabel value="Categoria" for="categoria" />
+    				<p:selectOneMenu id="categoria" value="#{cadastroTituloBean.item.categoria}" required="true">
+    					<f:selectItem itemLabel="Selecione a Categoria"/>
+    					<f:selectItems value="#{cadastroTituloBean.categorias}" var="categoria" itemLabel="#{categoria.nome}" />
+    				</p:selectOneMenu>
+    				
+    				<p:outputLabel value="VALOR" for="valorItem" />
+    				<p:inputText id="valorItem" size="12" maxlength="12" styleClass="moeda"
+    					value="#{cadastroTituloBean.item.valor}" required="true">
+    					<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+    				</p:inputText>
+    				
+    				<p:outputLabel value="DESCRIÇÃO" for="descricaoItem" />
+    				<p:inputText id="descricaoItem" size="30" value="#{cadastroTituloBean.item.descricao}" required="true" />
+    			</p:panelGrid> <br/>
+    			
+    			<p:commandButton value="Adicionar"
+    				action="#{cadastroTituloBean.adicionaItem}" process="@form"
+	    			update=":frmItem:adicionaItemDialog, :frmCadastro:itensTable, :frmCadastro:valorTotal" />
+    			
+    			<p:commandButton value="Cancelar" onclick="PF('adicionaItem').hide(); return false;" />
+    		</p:dialog>
+    	</h:form>
+    	
+    	<h:form id="frmParcela">
+    	<p:dialog header="Adicionar PARCELA"  modal="true" resizable="false" closeOnEscape="true" closable="false"
+    			widgetVar="adicionaParcela" id="adicionaParcelaDialog">
+    			
+    			<p:messages closable="true" />
+    			
+    			<p:panelGrid columns="2" id="panelParcela" columnClasses="rotulo, campo">
+    				<p:outputLabel value="Data de vencimento" for="dataVencimento" />
+    				<p:calendar id="dataVencimento" size="10" pattern="dd/MM/yyyy" 
+    					value="#{cadastroTituloBean.parcela.dataVencimento}" required="true" />
+    				
+    				<p:outputLabel value="VALOR" for="valorParcela" />
+    				<p:inputText id="valorParcela" size="12" maxlength="12" styleClass="moeda" required="true"
+    					value="#{cadastroTituloBean.parcela.valor}">
+    					<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+    				</p:inputText>
+    			</p:panelGrid> <br/>
+    			
+    			<p:commandButton value="Adicionar"
+    				action="#{cadastroTituloBean.adicionaParcela}" process="@form"
+	    			update=":frmParcela:adicionaParcelaDialog, :frmCadastro:parcelasTable" />
+    			
+    			<p:commandButton value="Cancelar" onclick="PF('adicionaParcela').hide(); return false;" />
+    		</p:dialog>
+    	</h:form>
+    	
+    	
+    	
+    	
+    </ui:define>
+</ui:composition>

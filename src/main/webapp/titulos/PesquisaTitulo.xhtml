@@ -1,0 +1,148 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+    
+    <ui:define name="titulo">Pesquisa de TÍTULOS</ui:define>
+    
+    <ui:define name="corpo">
+    	<h:form id="frmPesquisa">
+    		<h1>Pesquisa de TÍTULOS</h1>
+    		
+    		<p:toolbar style="margin-top: 20px">
+    			<p:toolbarGroup>
+    				<p:commandButton value="Pesquisar" action="#{pesquisaTituloBean.pesquisar}"
+    					update="@form" />
+    			</p:toolbarGroup>
+    			<p:toolbarGroup align="right">
+    				<p:button value="Novo" outcome="/titulos/CadastroTitulo" />
+    			</p:toolbarGroup>
+    		</p:toolbar>
+
+    		<p:messages autoUpdate="true" closable="true" />
+    		
+    		<p:focus context="panel"/>
+    		<p:panelGrid columns="2" id="panel" style="widht: 100%; margin-top: 20px"
+    				columnClasses="rotulo, campo">
+    			<p:outputLabel value="NOME" for="nome" />
+    			<p:inputText id="nome" size="10" value="#{pesquisaTituloBean.nome}" />
+    		</p:panelGrid>
+    		
+    		<p:dataTable id="titulosTable" value="#{pesquisaTituloBean.filtrados}" var="titulo"
+    			style="margin-top: 20px" emptyMessage="Nenhum TÍTULO encontrado." rows="10"
+    			paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom">
+    			<p:column headerText="DATA">
+    				<h:outputText value="#{titulo.data}">
+    					<f:convertDateTime pattern="dd/MM/yyyy" />
+    				</h:outputText>
+    			</p:column>
+    			<p:column headerText="DESCRIÇÃO" width="250px">
+    				<h:outputText value="#{titulo.descricao}" />
+    			</p:column>
+    			<p:column headerText="VALOR TOTAL" style="text-align: right; width: 200px">
+    				<h:outputText value="#{titulo.valorTotal}">
+    					<f:convertNumber type="currency" />
+    				</h:outputText>
+    			</p:column>
+    			
+    			<p:column headerText="ITENS / PARCELAS" style="text-align: center; width: 150px">
+    				<p:commandButton icon="ui-icon-pencil" title="Listagem de Itens" oncomplete="PF('listagemItens').show()"
+    					update=":frmPesquisa:listagemItensDialog">
+    					<f:setPropertyActionListener value="#{titulo}" target="#{pesquisaTituloBean.selecionado}" />
+    				</p:commandButton>
+    				
+    				<p:commandButton icon="ui-icon-pencil" title="Listagem de Parcelas" oncomplete="PF('listagemParcelas').show()"
+    					update=":frmPesquisa:listagemParcelasDialog">
+    					<f:setPropertyActionListener value="#{titulo}" target="#{pesquisaTituloBean.selecionado}" />
+    				</p:commandButton>
+    			</p:column>
+    			
+    			<p:column style="text-align: center; width: 100px">
+    				<p:button icon="ui-icon-pencil" title="Editar" outcome="/titulos/CadastroTitulo">
+    					<f:param name="titulo" value="#{titulo.id}" />
+    				</p:button>
+	    			
+	    			<p:commandButton icon="ui-icon-trash" title="Excluir" oncomplete="PF('confirmacaoExclusao').show()"
+	    				update=":frmPesquisa:confirmacaoExclusaoDialog">
+	    				<f:setPropertyActionListener value="#{titulo}" target="#{pesquisaTituloBean.selecionado}" />
+	    			</p:commandButton>
+    			</p:column>
+    		</p:dataTable>
+    		
+    		<p:dialog header="Listagem de Itens" closeOnEscape="true" modal="true" resizable="false"
+    			widgetVar="listagemItens" id="listagemItensDialog">
+    			
+    			<p:dataTable id="itensTable" value="#{pesquisaTituloBean.selecionado.itens}" var="item" style="width: 800px">
+    				<p:column headerText="CATEGORIA">
+    					<h:outputText value="#{item.categoria.nome}" />
+    				</p:column>
+    				<p:column headerText="DESCRIÇÃO">
+    					<h:outputText value="#{item.descricao}" />
+    				</p:column>
+    				<p:column headerText="VALOR" style="text-align: right; width: 200px">
+    					<h:outputText value="#{item.valor}">
+    						<f:convertNumber type="currency" />
+    					</h:outputText>
+    				</p:column>
+    			</p:dataTable>
+    		</p:dialog>
+    		
+    		<p:dialog header="Listagem de Parcelas" closeOnEscape="true" modal="true" resizable="false"
+    			widgetVar="listagemParcelas" id="listagemParcelasDialog">
+    			
+    			<p:dataTable id="parcelasTable" value="#{pesquisaTituloBean.selecionado.parcelas}" var="parcela" style="width: 800px">
+    				<p:column headerText="DATA DE VENCIMENTO" style="text-align: center">
+    					<h:outputText value="#{parcela.dataVencimento}">
+    						<f:convertDateTime pattern="dd/MM/yyyy" />
+    					</h:outputText>
+    				</p:column>
+    				<p:column headerText="VALOR" style="text-align: right">
+    					<h:outputText value="#{parcela.valor}">
+    						<f:convertNumber type="currency" />
+    					</h:outputText>
+    				</p:column>
+    				<p:column headerText="ACRÉSCIMO" style="text-align: right">
+    					<h:outputText value="#{parcela.acrescimo}">
+    						<f:convertNumber type="currency" />
+    					</h:outputText>
+    				</p:column>
+    				<p:column headerText="DESCONTO" style="text-align: right">
+    					<h:outputText value="#{parcela.desconto}">
+    						<f:convertNumber type="currency" />
+    					</h:outputText>
+    				</p:column>
+    				<p:column headerText="PAGA?" style="text-align: center; width: 100px">
+    					<h:outputText value="#{parcela.paga ? 'SIM' : 'NÃO'}" />
+    				</p:column>
+    			</p:dataTable>
+    		</p:dialog>
+    		
+    		<p:confirmDialog header="Exclusão de TÍTULO" closable="false" closeOnEscape="true"
+    			widgetVar="confirmacaoExclusao"	id="confirmacaoExclusaoDialog">
+    			
+    			<f:facet name="message">
+            		<h:outputFormat value="Tem certeza de que deseja excluir o título?" /> <br/> <br/>
+            		<h:outputLabel value="Data: " />
+            		<h:outputFormat value="#{pesquisaTituloBean.selecionado.data}">
+            			<f:convertDateTime pattern="dd/MM/yyyy" />
+            		</h:outputFormat> <br/>
+            		
+            		<h:outputFormat value="Descrição: #{pesquisaTituloBean.selecionado.descricao}" /> <br/>
+            		
+            		<h:outputLabel value="Valor Total: " />
+            		<h:outputFormat value="#{pesquisaTituloBean.selecionado.valorTotal}">
+            			<f:convertNumber type="currency" />
+            		</h:outputFormat> <br/>
+        		</f:facet>
+        		
+        		<p:commandButton value="Não" onclick="PF('confirmacaoExclusao').hide(); return false;" />
+    			
+    			<p:commandButton value="Sim" oncomplete="PF('confirmacaoExclusao').hide()"
+    				action="#{pesquisaTituloBean.excluir}" process="@this"
+	    			update=":frmPesquisa:titulosTable" />
+	    	</p:confirmDialog>
+    	</h:form>
+    </ui:define>
+</ui:composition>

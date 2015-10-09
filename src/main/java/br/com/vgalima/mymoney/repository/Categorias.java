@@ -53,6 +53,13 @@ public class Categorias implements Serializable {
 	return manager.createQuery(cq).getResultList();
     }
 
+    public List<Categoria> getCategoriasDespesa() {
+	CriteriaQuery<Categoria> cq = manager.getCriteriaBuilder().createQuery(
+		Categoria.class);
+	cq.select(cq.from(Categoria.class));
+	return manager.createQuery(cq).getResultList();
+    }
+
     public Categoria existeCategoria(String nome) {
 	try {
 	    return manager

@@ -61,6 +61,9 @@ public class Contas implements Serializable {
 	if (nome == null || nome.trim().isEmpty())
 	    return null;
 
+	if ("*".equals(nome.trim()))
+	    return getContas();
+
 	String consulta = "FROM Conta c WHERE c.nome LIKE :nome";
 	TypedQuery<Conta> query = manager.createQuery(consulta, Conta.class);
 	query.setParameter("nome", "%" + nome + "%");

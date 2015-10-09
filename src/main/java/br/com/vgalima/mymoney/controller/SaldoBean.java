@@ -33,6 +33,6 @@ public class SaldoBean implements Serializable {
 	for (Conta conta : contas.getContas())
 	    saldoContas.put(conta, saldos.getSaldoPorConta(conta));
 
-	return new ArrayList(saldoContas.entrySet());
+	return new ArrayList<>(saldoContas.entrySet());
     }
 }

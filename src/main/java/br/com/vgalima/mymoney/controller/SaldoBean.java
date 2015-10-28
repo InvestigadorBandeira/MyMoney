@@ -15,6 +15,7 @@ import javax.inject.Named;
 import br.com.vgalima.mymoney.model.Conta;
 import br.com.vgalima.mymoney.repository.Contas;
 import br.com.vgalima.mymoney.repository.Saldos;
+import br.com.vgalima.mymoney.util.jsf.FacesUtil;
 
 @Named
 @ViewScoped
@@ -27,12 +28,29 @@ public class SaldoBean implements Serializable {
     @Inject
     Contas contas;
 
+    private Map<Conta, BigDecimal> saldoContas;
+
+    public void inicializar() {
+	if (FacesUtil.isNotPostback()) {
+	    if (saldoContas == null) {
+		saldoContas = new HashMap<>();
+
+		for (Conta conta : contas.getContas())
+		    saldoContas.put(conta, saldos.getSaldoPorConta(conta));
+	    }
+	}
+    }
+
     public List<Entry<Conta, BigDecimal>> getSaldoContas() {
-	Map<Conta, BigDecimal> saldoContas = new HashMap<>();
-
-	for (Conta conta : contas.getContas())
-	    saldoContas.put(conta, saldos.getSaldoPorConta(conta));
-
 	return new ArrayList<>(saldoContas.entrySet());
+    }
+
+    public BigDecimal getTotalSaldos() {
+	BigDecimal total = BigDecimal.ZERO;
+
+	for (Map.Entry<Conta, BigDecimal> dados : getSaldoContas())
+	    total = total.add(dados.getValue());
+
+	return total;
     }
 }

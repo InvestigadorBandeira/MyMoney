@@ -103,6 +103,15 @@ h1 {
 .ui-tabs.ui-tabs-top > .ui-tabs-nav {
     padding: 0px !important;
 }
+
+.negativo{
+	/* background-color: #FA8072!important; */
+	font-weight: bold;
+	border-color: #FA8072!important;
+	border-width: 2px;
+	color: #FF0000!important;
+}
+
 /* Customiza TabView - fim */
 
 /* Menu sistema inicio */

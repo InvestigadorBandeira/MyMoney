@@ -1,13 +1,17 @@
 package br.com.vgalima.mymoney.repository;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
 
+import br.com.vgalima.mymoney.model.Conta;
 import br.com.vgalima.mymoney.model.Transferencia;
 import br.com.vgalima.mymoney.service.NegocioException;
 import br.com.vgalima.mymoney.util.jpa.Transactional;
@@ -44,4 +48,39 @@ public class Transferencias implements Serializable {
 	return manager.find(Transferencia.class, id);
     }
 
+    public BigDecimal somaPorContaOrigem(Conta origem) {
+	BigDecimal total = BigDecimal.ZERO;
+
+	Query query = manager
+		.createQuery(
+			"SELECT SUM(t.valor) FROM Transferencia t WHERE t.origem = :origem")
+		.setParameter("origem", origem);
+
+	try {
+	    Number retorno = (Number) query.getSingleResult();
+	    if (retorno != null)
+		total = total.add(new BigDecimal(retorno.doubleValue()));
+	} catch (NoResultException e) {
+	}
+
+	return total;
+    }
+
+    public BigDecimal somaPorContaDestino(Conta destino) {
+	BigDecimal total = BigDecimal.ZERO;
+
+	Query query = manager
+		.createQuery(
+			"SELECT SUM(t.valor) FROM Transferencia t WHERE t.destino = :destino")
+		.setParameter("destino", destino);
+
+	try {
+	    Number retorno = (Number) query.getSingleResult();
+	    if (retorno != null)
+		total = total.add(new BigDecimal(retorno.doubleValue()));
+	} catch (NoResultException e) {
+	}
+
+	return total;
+    }
 }

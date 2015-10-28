@@ -8,11 +8,15 @@
     <ui:define name="titulo">MyMoney - Sistema de Controle Financeiro Pessoal</ui:define>
     
     <ui:define name="corpo">
+    	<f:metadata>
+    		<f:event listener="#{saldoBean.inicializar}" type="preRenderView" />
+    	</f:metadata>
+    
     	<h1>Saldo das Contas</h1>
     	
-    	<h:form style="margin-top: 20px">
+    	<h:form id="frmSaldos" style="margin-top: 20px">
     		<p:dataTable id="saldoTable" value="#{saldoBean.saldoContas}" var="saldo"
-    			emptyMessage="Não existem contas cadastradas.">
+    			emptyMessage="Não existem contas cadastradas." rowStyleClass="#{saldo.value lt '0' ? 'negativo' : null }">
     			<p:column headerText="CONTA">
     				<h:outputText value="#{saldo.key.nome}" />
     			</p:column>
@@ -21,6 +25,18 @@
     					<f:convertNumber type="currency" />
     				</h:outputText>
     			</p:column>
+    			<p:columnGroup type="footer">
+    				<p:row>
+    					<p:column colspan="1" footerText="TOTAL DOS SALDOS" style="text-align: right; font-weight: bold" />
+    					<p:column style="text-align: right">
+    						<f:facet name="footer">
+    							<h:outputText value="#{saldoBean.totalSaldos}" style="font-weight: bold">
+    								<f:convertNumber type="currency"/>
+    							</h:outputText>
+    						</f:facet>
+    					</p:column>
+    				</p:row>
+    			</p:columnGroup>
     		</p:dataTable>
     	</h:form>
     </ui:define>

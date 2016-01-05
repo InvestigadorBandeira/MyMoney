@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import br.com.vgalima.mymoney.model.Categoria;
-import br.com.vgalima.mymoney.model.Item;
+import br.com.vgalima.mymoney.model.ItemTitulo;
 import br.com.vgalima.mymoney.model.Parcela;
 import br.com.vgalima.mymoney.model.Titulo;
 import br.com.vgalima.mymoney.repository.Categorias;
@@ -32,7 +32,7 @@ public class CadastroTituloBean implements Serializable {
 
     private Titulo titulo;
 
-    private Item item;
+    private ItemTitulo item;
 
     private Parcela parcela;
 
@@ -49,7 +49,7 @@ public class CadastroTituloBean implements Serializable {
 
     private void limpar() {
 	titulo = new Titulo();
-	item = new Item();
+	item = new ItemTitulo();
 	parcela = new Parcela();
 	titulo.setItens(new ArrayList<>());
 	titulo.setParcelas(new ArrayList<>());
@@ -69,7 +69,7 @@ public class CadastroTituloBean implements Serializable {
 
 	item.setTitulo(titulo);
 	titulo.getItens().add(item);
-	item = new Item();
+	item = new ItemTitulo();
     }
 
     public void adicionaParcela() {
@@ -90,11 +90,11 @@ public class CadastroTituloBean implements Serializable {
 	this.titulo = titulo;
     }
 
-    public Item getItem() {
+    public ItemTitulo getItem() {
 	return item;
     }
 
-    public void setItem(Item item) {
+    public void setItem(ItemTitulo item) {
 	this.item = item;
     }
 

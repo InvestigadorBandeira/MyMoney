@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
-public class Item implements Serializable {
+public class ItemParcela implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -37,9 +37,7 @@ public class Item implements Serializable {
     private String descricao;
 
     @ManyToOne
-    private Titulo titulo;
-
-    @ManyToOne
+    @JoinColumn(name = "parcela_id")
     private Parcela parcela;
 
     public Long getId() {
@@ -74,14 +72,6 @@ public class Item implements Serializable {
 	this.descricao = descricao;
     }
 
-    public Titulo getTitulo() {
-	return titulo;
-    }
-
-    public void setTitulo(Titulo titulo) {
-	this.titulo = titulo;
-    }
-
     public Parcela getParcela() {
 	return parcela;
     }
@@ -106,7 +96,7 @@ public class Item implements Serializable {
 	    return false;
 	if (getClass() != obj.getClass())
 	    return false;
-	Item other = (Item) obj;
+	ItemParcela other = (ItemParcela) obj;
 	if (id == null) {
 	    if (other.id != null)
 		return false;

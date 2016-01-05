@@ -11,8 +11,6 @@
     <ui:define name="corpo">
     	<f:metadata>
     		<o:viewParam name="titulo" value="#{cadastroTituloBean.titulo}" />
-    		<o:viewParam name="item" value="#{cadastroTituloBean.item}" />
-    		<o:viewParam name="parcela" value="#{cadastroTituloBean.parcela}" />
     		<f:event listener="#{cadastroTituloBean.inicializar}" type="preRenderView" />
     	</f:metadata>
     
@@ -55,6 +53,9 @@
     		<p:outputLabel value="ITENS ADICIONADOS" for="itensTable" style="font-weight: bold" />
     		<p:dataTable id="itensTable" value="#{cadastroTituloBean.titulo.itens}" var="item" style="width: 800px"
     			emptyMessage="Nenhum ITEM adicionado.">
+    			<p:column headerText="ID">
+    				<h:outputText value="#{item.id}" />
+    			</p:column>
     			<p:column headerText="CATEGORIA">
     				<h:outputText value="#{item.categoria.nome}" />
     			</p:column>
@@ -66,12 +67,26 @@
     					<f:convertNumber type="currency" />
     				</h:outputText>
     			</p:column>
+    			<p:columnGroup type="footer">
+    				<p:row>
+    					<p:column colspan="2" footerText="TOTAL DOS ITENS" style="text-align: right; font-weight: bold" />
+    					<p:column style="text-align: right">
+    						<f:facet name="footer">
+    							<h:outputText value="#{cadastroTituloBean.titulo.totalItens}">
+    								<f:convertNumber type="currency"/>
+    							</h:outputText>
+    						</f:facet>
+    					</p:column>
+    				</p:row>
+    			</p:columnGroup>
     		</p:dataTable> <br/>
     		
     		<p:outputLabel value="PARCELAS ADICIONADAS" for="parcelasTable" style="font-weight: bold" />
     		<p:dataTable id="parcelasTable" value="#{cadastroTituloBean.titulo.parcelas}" var="parcela" style="width: 800px"
     			emptyMessage="Nenhuma PARCELA adicionada.">
-    			
+    			<p:column headerText="ID">
+    				<h:outputText value="#{parcela.id}" />
+    			</p:column>
     			<p:column headerText="DATA DE VENCIMENTO" style="text-align: center">
     				<h:outputText value="#{parcela.dataVencimento}">
     					<f:convertDateTime pattern="dd/MM/yyyy" />
@@ -95,6 +110,18 @@
     			<p:column headerText="PAGA?" style="text-align: center; width: 100px">
     				<h:outputText value="#{parcela.paga ? 'SIM' : 'NÃO'}" />
     			</p:column>
+    			<p:columnGroup type="footer">
+    				<p:row>
+    					<p:column colspan="1" footerText="TOTAL DAS PARCELAS" style="text-align: right; font-weight: bold" />
+    					<p:column style="text-align: right">
+    						<f:facet name="footer">
+    							<h:outputText value="#{cadastroTituloBean.titulo.totalParcelas}">
+    								<f:convertNumber type="currency"/>
+    							</h:outputText>
+    						</f:facet>
+    					</p:column>
+    				</p:row>
+    			</p:columnGroup>
     		</p:dataTable>
     	</h:form>
     	
@@ -154,9 +181,6 @@
     			<p:commandButton value="Cancelar" onclick="PF('adicionaParcela').hide(); return false;" />
     		</p:dialog>
     	</h:form>
-    	
-    	
-    	
     	
     </ui:define>
 </ui:composition>

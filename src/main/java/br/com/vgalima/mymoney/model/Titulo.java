@@ -39,13 +39,10 @@ public class Titulo implements Serializable {
     private String descricao;
 
     @OneToMany(mappedBy = "titulo", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Item> itens;
+    private List<ItemTitulo> itens;
 
     @OneToMany(mappedBy = "titulo", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Parcela> parcelas;
-
-    @Transient
-    private BigDecimal valorTotal = BigDecimal.ZERO;
 
     public Long getId() {
 	return id;
@@ -71,11 +68,11 @@ public class Titulo implements Serializable {
 	this.descricao = descricao;
     }
 
-    public List<Item> getItens() {
+    public List<ItemTitulo> getItens() {
 	return itens;
     }
 
-    public void setItens(List<Item> itens) {
+    public void setItens(List<ItemTitulo> itens) {
 	this.itens = itens;
     }
 
@@ -85,16 +82,6 @@ public class Titulo implements Serializable {
 
     public void setParcelas(List<Parcela> parcelas) {
 	this.parcelas = parcelas;
-    }
-
-    public BigDecimal getValorTotal() {
-	if (itens != null) {
-	    valorTotal = BigDecimal.ZERO;
-	    for (Item item : itens)
-		valorTotal = valorTotal.add(item.getValor());
-	}
-
-	return valorTotal;
     }
 
     @Override
@@ -122,4 +109,35 @@ public class Titulo implements Serializable {
 	return true;
     }
 
+    @Transient
+    public BigDecimal getValorTotal() {
+	BigDecimal valorTotal = BigDecimal.ZERO;
+
+	if (itens != null)
+	    for (ItemTitulo item : itens)
+		valorTotal = valorTotal.add(item.getValor());
+
+	return valorTotal;
+    }
+
+    @Transient
+    public BigDecimal getTotalItens() {
+	BigDecimal total = BigDecimal.ZERO;
+
+	if (itens != null)
+	    for (ItemTitulo item : itens)
+		total = total.add(item.getValor());
+
+	return total;
+    }
+
+    @Transient
+    public BigDecimal getTotalParcelas() {
+	BigDecimal total = BigDecimal.ZERO;
+
+	for (Parcela parcela : parcelas)
+	    total = total.add(parcela.getValor());
+
+	return total;
+    }
 }

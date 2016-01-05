@@ -46,7 +46,7 @@ public class Parcela implements Serializable {
     private Boolean paga = false;
 
     @OneToMany(mappedBy = "parcela", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Item> itens;
+    private List<ItemParcela> itens;
 
     @ManyToOne
     private Titulo titulo;
@@ -99,11 +99,11 @@ public class Parcela implements Serializable {
 	this.paga = paga;
     }
 
-    public List<Item> getItens() {
+    public List<ItemParcela> getItens() {
 	return itens;
     }
 
-    public void setItens(List<Item> itens) {
+    public void setItens(List<ItemParcela> itens) {
 	this.itens = itens;
     }
 

@@ -47,13 +47,13 @@
     				</h:outputText>
     			</p:column>
     			
-    			<p:column headerText="ITENS / PARCELAS" style="text-align: center; width: 150px">
-    				<p:commandButton icon="ui-icon-pencil" title="Listagem de Itens" oncomplete="PF('listagemItens').show()"
+    			<p:column headerText="LISTAGENS" style="text-align: center; width: 200px">
+    				<p:commandButton value="Itens" icon="ui-icon-search" title="Listagem de Itens" oncomplete="PF('listagemItens').show()"
     					update=":frmPesquisa:listagemItensDialog">
     					<f:setPropertyActionListener value="#{titulo}" target="#{pesquisaTituloBean.selecionado}" />
     				</p:commandButton>
     				
-    				<p:commandButton icon="ui-icon-pencil" title="Listagem de Parcelas" oncomplete="PF('listagemParcelas').show()"
+    				<p:commandButton value="Parcelas" icon="ui-icon-search" title="Listagem de Parcelas" oncomplete="PF('listagemParcelas').show()"
     					update=":frmPesquisa:listagemParcelasDialog">
     					<f:setPropertyActionListener value="#{titulo}" target="#{pesquisaTituloBean.selecionado}" />
     				</p:commandButton>
